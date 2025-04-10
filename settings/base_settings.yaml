@@ -1,14 +1,14 @@
 dataset:
-  path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/data
+  path: sbi-ariel/data
   type: RealFullNormalizedArielDataset
 evaluation:
-  aux_data: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/TrainingData/AuxillaryTable.csv
+  aux_data: ARIEL/TrainingData/AuxillaryTable.csv
   beta: 0.8
-  cia_path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/ADC_t3_input/cia/HITRAN
+  cia_path: ARIEL/ADC_t3_input/cia/HITRAN
   n_quantiles: 10
   n_repeats: 2048
-  opacity_path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/ADC_t3_input/xsec
-  tracedata: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/TrainingData/Ground
+  opacity_path: ARIEL/ADC_t3_input/xsec
+  tracedata: ARIEL/TrainingData/Ground
     Truth Package/Tracedata.hdf5
 model:
   posterior_kwargs:
