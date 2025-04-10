@@ -8,7 +8,7 @@ from pathlib import Path
 import os
 import sys
 sys.path.append("../")
-from metrics.ppc import compute_confidence_interval
+from metrics.coverage import compute_confidence_interval
 import random
 import torch
 from matplotlib.lines import Line2D
