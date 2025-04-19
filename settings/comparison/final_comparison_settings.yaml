@@ -1,36 +1,35 @@
 dataset:
-  path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/data
+  path: data/
 evaluation:
-  aux_data: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/TrainingData/AuxillaryTable.csv
+  aux_data: ARIEL/TrainingData/AuxillaryTable.csv
   beta: 0.8
-  cia_path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/ADC_t3_input/cia/HITRAN
+  cia_path: ARIEL/ADC_t3_input/cia/HITRAN
   n_quantiles: 10
   n_repeats: 2048
-  opacity_path: /home/mgo/Desktop/untested/low-matching-posterior-estimation/ARIEL/ADC_t3_input/xsec
-  tracedata: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/TrainingData/Ground
-    Truth Package/Tracedata.hdf5
+  opacity_path: ARIEL/ADC_t3_input/xsec
+  tracedata: ARIEL/TrainingData/Ground Truth Package/Tracedata.hdf5
 predictors:
   Baseline (CNN):
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/competitors/ADC2023-baseline/output_tf
+    eval_dir: competitors/ADC2023-baseline/output_tf
     color: '#E04900'
   Ex-o-plain:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/competitors/Ex-o-plain/output_ns
+    eval_dir: competitors/Ex-o-plain/output_ns
     color: '#E09100'
   NSF:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/competitors/Ariel_Data_Challenge_2023_solution/outputs
+    eval_dir: competitors/Ariel_Data_Challenge_2023_solution/outputs
     color: '#916C29'
   NS:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/ns_runs
+    eval_dir: ns_runs
     color: '#914A27'
-  FMPE (FN-P):
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_111529
+  FMPE (IUAN-P):
+    eval_dir: batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_111529
     color: '#470141'
-  FMPE (FS-P):
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250220_114102
+  FMPE (IUAS-P):
+    eval_dir: batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250220_114102
     color: '#243566'
-  FMPE (FS-A):
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_113323
+  FMPE (IUAS-A):
+    eval_dir: batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_113323
     color: '#207791'
-  FMPE (RFN-A):
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_RealFullNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_081629
+  FMPE (RUAN-A):
+    eval_dir: batch_runs/dt_RealFullNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_081629
     color: '#00BDF5'

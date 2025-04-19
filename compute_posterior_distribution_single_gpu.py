@@ -112,7 +112,7 @@ if __name__ == "__main__":
     try:
         test_dataset = load_dataset(settings)[1]
     except FileNotFoundError:
-        settings["dataset"]["path"] = "sbi-ariel/data"
+        settings["dataset"]["path"] = "data/"
         test_dataset = load_dataset(settings)[1]
     
     # build test loader

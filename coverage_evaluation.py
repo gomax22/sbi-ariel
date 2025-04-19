@@ -46,7 +46,7 @@ def compute_coverage_analysis(
     coverage_support     =   []
 
     # they should be aligned. If not, we have a problem
-    with tqdm(total=n_samples, desc="Computing prior-predictive checks...") as pbar:
+    with tqdm(total=n_samples, desc="Performing posterior coverage analysis...") as pbar:
         for idx, (posterior_samples_batch, theta) in enumerate(zip(posterior_samples, thetas)):
             
             # compute means and stds

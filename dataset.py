@@ -133,6 +133,55 @@ class FullNormalizedArielDataset(ArielDataset):
         return self.theta[idx], self.x[idx]
 
 
+class NoisyNormalizedArielDataset(ArielDataset):
+    def __init__(self, theta, spectra, noises, preprocessing=None):
+        super(NoisyNormalizedArielDataset, self).__init__()
+
+        self.preprocessing = {
+            "spectra": {"min": torch.min(spectra, dim=0)[0], "max": torch.std(spectra, dim=0)},
+            "noises": {"min": torch.min(noises, dim=0)[0], "max": torch.max(noises, dim=0)[0]},
+            "theta": {"min": torch.min(theta, dim=0)[0], "max": torch.max(theta, dim=0)[0]},
+        } if preprocessing is None else preprocessing
+
+        self.theta = self.normalize(theta, "theta")
+        self.spectra = self.normalize(spectra, "spectra") # real
+        self.noises = self.normalize(noises, "noises")
+
+        # not the best way of conditioning so far
+        self.x = torch.cat([self.spectra, self.noises], dim=1)
+
+    def __len__(self):
+        return len(self.theta)
+
+    def __getitem__(self, idx):
+        return self.theta[idx], self.x[idx]
+
+
+class NoisyStandardizedArielDataset(ArielDataset):
+    def __init__(self, theta, spectra, noises, preprocessing=None):
+        super(NoisyStandardizedArielDataset, self).__init__()
+
+        self.preprocessing = {
+            "spectra": {"min": torch.min(spectra, dim=0)[0], "max": torch.std(spectra, dim=0)},
+            "noises": {"min": torch.min(noises, dim=0)[0], "max": torch.max(noises, dim=0)[0]},
+            "theta": {"mean": torch.mean(theta, dim=0), "std": torch.std(theta, dim=0)},
+        } if preprocessing is None else preprocessing
+
+        self.theta = self.standardize(theta, "theta")
+        self.spectra = self.normalize(spectra, "spectra") # real
+        self.noises = self.normalize(noises, "noises")
+
+        # not the best way of conditioning so far
+        self.x = torch.cat([self.spectra, self.noises], dim=1)
+
+    def __len__(self):
+        return len(self.theta)
+
+    def __getitem__(self, idx):
+        return self.theta[idx], self.x[idx]
+
+
+
 class RealNormalizedArielDataset(ArielDataset):
     def __init__(self, theta, spectra, aux_data, preprocessing=None):
         super(RealNormalizedArielDataset, self).__init__()
@@ -315,6 +364,140 @@ def load_full_standardized_ariel_dataset(settings):
     
     return train_dataset, valid_dataset, None
 
+def load_noisy_normalized_ariel_dataset(settings):
+    directory_save = settings["dataset"]["path"]
+    train_targets = torch.tensor(np.load(join(directory_save, 'train_targets.npy')), dtype=torch.float)
+    train_spectra =  torch.tensor(np.load(join(directory_save, 'train_ideal_spectra.npy')), dtype=torch.float)
+    train_noises = torch.tensor(np.load(join(directory_save, 'train_noises.npy')), dtype=torch.float)
+
+    valid_spectra = torch.tensor(np.load(join(directory_save, 'valid_ideal_spectra.npy')), dtype=torch.float)
+    valid_targets = torch.tensor(np.load(join(directory_save, 'valid_targets.npy')), dtype=torch.float)  
+    valid_noises = torch.tensor(np.load(join(directory_save, 'valid_noises.npy')), dtype=torch.float)
+    
+    test_spectra = torch.tensor(np.load(join(directory_save, 'test_ideal_spectra.npy')), dtype=torch.float)
+    test_targets = torch.tensor(np.load(join(directory_save, 'test_targets.npy')), dtype=torch.float)
+    test_noises = torch.tensor(np.load(join(directory_save, 'test_noises.npy')), dtype=torch.float)
+    
+    
+    train_dataset = NoisyNormalizedArielDataset(
+        torch.cat([train_targets, valid_targets], dim=0),
+        torch.cat([train_spectra, valid_spectra], dim=0),
+        torch.cat([train_noises, valid_noises], dim=0)
+    )
+
+    settings["task"]["dim_theta"] = train_targets.shape[1]
+    settings["task"]["dim_x"] = train_spectra.shape[1] + train_noises.shape[1]    
+    
+    valid_dataset = NoisyNormalizedArielDataset(test_targets, test_spectra, test_noises, preprocessing=train_dataset.preprocessing)
+    
+    # effective_test_spectra = torch.tensor(np.load(join(directory_save, 'effective_test_real_spectra.npy')), dtype=torch.float)
+    # effective_test_aux_data = torch.tensor(np.load(join(directory_save, 'effective_test_aux_data.npy')), dtype=torch.float)
+    # fake_targets = torch.ones((len(effective_test_spectra), train_targets.shape[1]), dtype=torch.float)
+    # test_dataset = RealNormalizedArielDataset(fake_targets, effective_test_spectra, effective_test_aux_data, preprocessing=train_dataset.preprocessing)
+
+    return train_dataset, valid_dataset, None
+
+def load_noisy_standardized_ariel_dataset(settings):
+    directory_save = settings["dataset"]["path"]
+    train_targets = torch.tensor(np.load(join(directory_save, 'train_targets.npy')), dtype=torch.float)
+    train_spectra =  torch.tensor(np.load(join(directory_save, 'train_ideal_spectra.npy')), dtype=torch.float)
+    train_noises = torch.tensor(np.load(join(directory_save, 'train_noises.npy')), dtype=torch.float)
+
+    valid_spectra = torch.tensor(np.load(join(directory_save, 'valid_ideal_spectra.npy')), dtype=torch.float)
+    valid_targets = torch.tensor(np.load(join(directory_save, 'valid_targets.npy')), dtype=torch.float)  
+    valid_noises = torch.tensor(np.load(join(directory_save, 'valid_noises.npy')), dtype=torch.float)
+    
+    test_spectra = torch.tensor(np.load(join(directory_save, 'test_ideal_spectra.npy')), dtype=torch.float)
+    test_targets = torch.tensor(np.load(join(directory_save, 'test_targets.npy')), dtype=torch.float)
+    test_noises = torch.tensor(np.load(join(directory_save, 'test_noises.npy')), dtype=torch.float)
+    
+    
+    train_dataset = NoisyStandardizedArielDataset(
+        torch.cat([train_targets, valid_targets], dim=0),
+        torch.cat([train_spectra, valid_spectra], dim=0),
+        torch.cat([train_noises, valid_noises], dim=0)
+    )
+
+    settings["task"]["dim_theta"] = train_targets.shape[1]
+    settings["task"]["dim_x"] = train_spectra.shape[1] + train_noises.shape[1]    
+    
+    valid_dataset = NoisyStandardizedArielDataset(test_targets, test_spectra, test_noises, preprocessing=train_dataset.preprocessing)
+    
+    # effective_test_spectra = torch.tensor(np.load(join(directory_save, 'effective_test_real_spectra.npy')), dtype=torch.float)
+    # effective_test_aux_data = torch.tensor(np.load(join(directory_save, 'effective_test_aux_data.npy')), dtype=torch.float)
+    # fake_targets = torch.ones((len(effective_test_spectra), train_targets.shape[1]), dtype=torch.float)
+    # test_dataset = RealNormalizedArielDataset(fake_targets, effective_test_spectra, effective_test_aux_data, preprocessing=train_dataset.preprocessing)
+
+    return train_dataset, valid_dataset, None
+
+def load_real_noisy_normalized_ariel_dataset(settings):
+    directory_save = settings["dataset"]["path"]
+    train_targets = torch.tensor(np.load(join(directory_save, 'train_targets.npy')), dtype=torch.float)
+    train_spectra =  torch.tensor(np.load(join(directory_save, 'train_real_spectra.npy')), dtype=torch.float)
+    train_noises = torch.tensor(np.load(join(directory_save, 'train_noises.npy')), dtype=torch.float)
+
+    valid_spectra = torch.tensor(np.load(join(directory_save, 'valid_real_spectra.npy')), dtype=torch.float)
+    valid_targets = torch.tensor(np.load(join(directory_save, 'valid_targets.npy')), dtype=torch.float)  
+    valid_noises = torch.tensor(np.load(join(directory_save, 'valid_noises.npy')), dtype=torch.float)
+    
+    test_spectra = torch.tensor(np.load(join(directory_save, 'test_real_spectra.npy')), dtype=torch.float)
+    test_targets = torch.tensor(np.load(join(directory_save, 'test_targets.npy')), dtype=torch.float)
+    test_noises = torch.tensor(np.load(join(directory_save, 'test_noises.npy')), dtype=torch.float)
+    
+    
+    train_dataset = NoisyNormalizedArielDataset(
+        torch.cat([train_targets, valid_targets], dim=0),
+        torch.cat([train_spectra, valid_spectra], dim=0),
+        torch.cat([train_noises, valid_noises], dim=0)
+    )
+
+    settings["task"]["dim_theta"] = train_targets.shape[1]
+    settings["task"]["dim_x"] = train_spectra.shape[1] + train_noises.shape[1]    
+    
+    valid_dataset = NoisyNormalizedArielDataset(test_targets, test_spectra, test_noises, preprocessing=train_dataset.preprocessing)
+    
+    # effective_test_spectra = torch.tensor(np.load(join(directory_save, 'effective_test_real_spectra.npy')), dtype=torch.float)
+    # effective_test_aux_data = torch.tensor(np.load(join(directory_save, 'effective_test_aux_data.npy')), dtype=torch.float)
+    # fake_targets = torch.ones((len(effective_test_spectra), train_targets.shape[1]), dtype=torch.float)
+    # test_dataset = RealNormalizedArielDataset(fake_targets, effective_test_spectra, effective_test_aux_data, preprocessing=train_dataset.preprocessing)
+
+    return train_dataset, valid_dataset, None
+
+def load_real_noisy_standardized_ariel_dataset(settings):
+    directory_save = settings["dataset"]["path"]
+    train_targets = torch.tensor(np.load(join(directory_save, 'train_targets.npy')), dtype=torch.float)
+    train_spectra =  torch.tensor(np.load(join(directory_save, 'train_real_spectra.npy')), dtype=torch.float)
+    train_noises = torch.tensor(np.load(join(directory_save, 'train_noises.npy')), dtype=torch.float)
+
+    valid_spectra = torch.tensor(np.load(join(directory_save, 'valid_real_spectra.npy')), dtype=torch.float)
+    valid_targets = torch.tensor(np.load(join(directory_save, 'valid_targets.npy')), dtype=torch.float)  
+    valid_noises = torch.tensor(np.load(join(directory_save, 'valid_noises.npy')), dtype=torch.float)
+    
+    test_spectra = torch.tensor(np.load(join(directory_save, 'test_real_spectra.npy')), dtype=torch.float)
+    test_targets = torch.tensor(np.load(join(directory_save, 'test_targets.npy')), dtype=torch.float)
+    test_noises = torch.tensor(np.load(join(directory_save, 'test_noises.npy')), dtype=torch.float)
+    
+    
+    train_dataset = NoisyStandardizedArielDataset(
+        torch.cat([train_targets, valid_targets], dim=0),
+        torch.cat([train_spectra, valid_spectra], dim=0),
+        torch.cat([train_noises, valid_noises], dim=0)
+    )
+
+    settings["task"]["dim_theta"] = train_targets.shape[1]
+    settings["task"]["dim_x"] = train_spectra.shape[1] + train_noises.shape[1]    
+    
+    valid_dataset = NoisyStandardizedArielDataset(test_targets, test_spectra, test_noises, preprocessing=train_dataset.preprocessing)
+    
+    # effective_test_spectra = torch.tensor(np.load(join(directory_save, 'effective_test_real_spectra.npy')), dtype=torch.float)
+    # effective_test_aux_data = torch.tensor(np.load(join(directory_save, 'effective_test_aux_data.npy')), dtype=torch.float)
+    # fake_targets = torch.ones((len(effective_test_spectra), train_targets.shape[1]), dtype=torch.float)
+    # test_dataset = RealNormalizedArielDataset(fake_targets, effective_test_spectra, effective_test_aux_data, preprocessing=train_dataset.preprocessing)
+
+    return train_dataset, valid_dataset, None
+
+
+
 def load_real_normalized_ariel_dataset(settings):
     directory_save = settings["dataset"]["path"]
     train_targets = torch.tensor(np.load(join(directory_save, 'train_targets.npy')), dtype=torch.float)
@@ -473,6 +656,18 @@ def load_dataset(settings):
     # working on ideal data with noise and aux data
     elif settings["dataset"]["type"] == "FullStandardizedArielDataset":
         return load_full_standardized_ariel_dataset(settings)
+    
+    elif settings["dataset"]["type"] == "NoisyNormalizedArielDataset":
+        return load_noisy_normalized_ariel_dataset(settings)
+    
+    elif settings["dataset"]["type"] == "NoisyStandardizedArielDataset":
+        return load_noisy_standardized_ariel_dataset(settings)
+    
+    elif settings["dataset"]["type"] == "RealNoisyNormalizedArielDataset":
+        return load_real_noisy_normalized_ariel_dataset(settings)
+    
+    elif settings["dataset"]["type"] == "RealNoisyStandardizedArielDataset":
+        return load_real_noisy_standardized_ariel_dataset(settings)
     
     # working on real data without noise and with aux data
     elif settings["dataset"]["type"] == "RealNormalizedArielDataset":

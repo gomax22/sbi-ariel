@@ -110,4 +110,4 @@ if __name__ == "__main__":
     print(f"Resized reference distribution shape: {resized_reference_distribution.shape}")
     np.save(os.path.join(args.output_dir, "posterior_distribution.npy"), resized_reference_distribution)
 
-# python compute_reference_distribution.py --ground_truth_dir "ARIEL/TrainingData/Ground Truth Package" --data_dir sbi-ariel/data --n_repeats 2048 --output_dir ns_runs --adc
+# python compute_reference_distribution.py --ground_truth_dir "ARIEL/TrainingData/Ground Truth Package" --data_dir data --n_repeats 2048 --output_dir ns_runs --adc

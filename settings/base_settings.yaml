@@ -1,5 +1,5 @@
 dataset:
-  path: sbi-ariel/data
+  path: data
   type: RealFullNormalizedArielDataset
 evaluation:
   aux_data: ARIEL/TrainingData/AuxillaryTable.csv
@@ -8,8 +8,7 @@ evaluation:
   n_quantiles: 10
   n_repeats: 2048
   opacity_path: ARIEL/ADC_t3_input/xsec
-  tracedata: ARIEL/TrainingData/Ground
-    Truth Package/Tracedata.hdf5
+  tracedata: ARIEL/TrainingData/Ground Truth Package/Tracedata.hdf5
 model:
   posterior_kwargs:
     activation: gelu

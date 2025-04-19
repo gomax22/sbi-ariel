@@ -29,21 +29,19 @@ TIME_PRIOR_EXPONENT = [-0.75, -0.5, -0.25, 0.0, 0.5, 1.0, 2.0, 4.0]
 LEARNING_RATE = [0.001, 0.0005, 0.0001]
 HIDDEN_DIMS_LAYERS = [[128, 256, 512, 1024, 512, 256, 128], [512] * 7]
 MULTIPLICATIVE_FACTOR_LAYERS = [1, 2]
-# DATASET_TYPE = [
-#     "FullNormalizedArielDataset", 
-#     "RealFullNormalizedArielDataset", 
-#     "RealNormalizedArielDataset",
-# ]
-
-# DATASET_TYPE = [
-#     "FullStandardizedArielDataset",
-#     "RealFullStandardizedArielDataset",
-#     "RealStandardizedArielDataset"
-# ]
-
 DATASET_TYPE = [
+    "FullNormalizedArielDataset", 
+    "RealFullNormalizedArielDataset", 
+    "RealNormalizedArielDataset",
+    "FullStandardizedArielDataset",
+    "RealFullStandardizedArielDataset",
+    "RealStandardizedArielDataset"
     "NormalizedArielDataset",
     "StandardizedArielDataset",
+    "NoisyNormalizedArielDataset",
+    "NoisyStandardizedArielDataset",
+    "RealNoisyNormalizedArielDataset",
+    "RealNoisyStandardizedArielDataset",
 ]
 
 
@@ -73,10 +71,11 @@ def build_settings_fname(source_dir, settings):
 
 def create_settings(basic_settings, settings_dir):
 
-    temp_dir = os.path.join(settings_dir, "temp_base")
-    if Path(temp_dir).exists():
-        print("Settings directory already exists. Skipping settings creation.")
-        return [os.path.join(temp_dir, f) for f in os.listdir(temp_dir)]
+    temp_dir = os.path.join(settings_dir, "temp_noisy")
+
+    # if Path(temp_dir).exists():
+    #     print("Settings directory already exists. Skipping settings creation.")
+    #     return [os.path.join(temp_dir, f) for f in os.listdir(temp_dir)]
     
     Path(temp_dir).mkdir(parents=True, exist_ok=True)
 

@@ -1,36 +1,92 @@
 dataset:
-  path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/data
+  path: data/
 evaluation:
-  aux_data: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/TrainingData/AuxillaryTable.csv
+  aux_data: ARIEL/TrainingData/AuxillaryTable.csv
   beta: 0.8
-  cia_path: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/ADC_t3_input/cia/HITRAN
+  cia_path: ARIEL/ADC_t3_input/cia/HITRAN
   n_quantiles: 10
   n_repeats: 2048
-  opacity_path: /home/mgo/Desktop/untested/low-matching-posterior-estimation/ARIEL/ADC_t3_input/xsec
-  tracedata: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/ARIEL/TrainingData/Ground
-    Truth Package/Tracedata.hdf5
+  opacity_path: ARIEL/ADC_t3_input/xsec
+  tracedata: ARIEL/TrainingData/Ground Truth Package/Tracedata.hdf5
 predictors:
-  FN-P:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_111529
-    color: blue
-  FN-A:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_14/mfl_2/dropout_0.0/a_-0.75/lr_0.0001/20250220_003610
-    color: red
-  FS-P:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250220_114102
-    color: darkturquoise
-  FS-A:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_113323
-    color: brown
-  RFN-P:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_RealFullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_083207
-    color: darkgoldenrod
-  RFN-A:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_RealFullNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_081629
-    color: darkviolet
-  RFS-P:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_RealNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250222_004230
-    color: chocolate
-  RFS-A:
-    eval_dir: /home/mgo/Desktop/untested/flow-matching-posterior-estimation/sbi-ariel/batch_runs/dt_RealNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.0/a_-0.75/lr_0.0001/20250221_181340
-    color: mediumvioletred
+  IN-P:
+    eval_dir: batch_runs/dt_NormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.0/a_-0.75/lr_0.0005/20250408_170620
+    color:
+  IN-A:
+    eval_dir: batch_runs/dt_NormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.0/a_-0.75/lr_0.0005/20250408_170620
+    color:
+  IS-P:
+    eval_dir: batch_runs/dt_StandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0005/20250410_082430
+    color:
+  IS-A:
+    eval_dir: batch_runs/dt_StandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_14/mfl_2/dropout_0.0/a_-0.75/lr_0.0001/20250409_194542
+    color: 
+
+  IUN-P:
+    eval_dir: batch_runs/dt_NoisyNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250413_231258
+    color:
+  IUN-A:
+    eval_dir: batch_runs/dt_NoisyNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250413_224509
+    color:
+  IUS-P:
+    eval_dir: batch_runs/dt_NoisyStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250415_011216
+    color:
+  IUS-A:
+    eval_dir: batch_runs/dt_NoisyStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250415_010313
+    color:
+
+
+  RUN-P:
+    eval_dir: batch_runs/dt_RealNoisyNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.0/a_-0.75/lr_0.0001/20250415_142547
+    color:
+  RUN-A:
+    eval_dir: batch_runs/dt_RealNoisyNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250416_031231
+    color:
+  RUS-P:
+    eval_dir: batch_runs/dt_RealNoisyStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250417_052635
+    color:
+  RUS-A:
+    eval_dir: batch_runs/dt_RealNoisyStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250417_051503
+    color:
+
+  RAN-P:
+    eval_dir: batch_runs/dt_RealNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250222_004230
+    color:
+  RAN-A:
+    eval_dir: batch_runs/dt_RealNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.0/a_-0.75/lr_0.0001/20250221_181340
+    color:
+  RAS-P:
+    eval_dir: batch_runs/dt_RealStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250222_023924
+    color:
+  RAS-A:
+    eval_dir: batch_runs/dt_RealStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.0/a_-0.75/lr_0.0001/20250221_183205
+    color:
+
+  IUAN-P:
+    eval_dir: batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_111529
+    color: 
+  IUAN-A:
+    eval_dir: batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_14/mfl_2/dropout_0.0/a_-0.75/lr_0.0001/20250220_003610
+    color:
+  IUAS-P:
+    eval_dir: batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250220_114102
+    color:
+  IUAS-A:
+    eval_dir: batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_113323
+    color:
+
+  RUAN-P:
+    eval_dir: batch_runs/dt_RealFullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_083207
+    color:
+  RUAN-A:
+    eval_dir: batch_runs/dt_RealFullNormalizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_081629
+    color:
+  RUAS-P:
+    eval_dir: batch_runs/dt_RealFullStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.0/a_-0.75/lr_0.0001/20250221_002919
+    color:
+  RUAS-A:
+    eval_dir: batch_runs/dt_RealFullStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250221_095003
+    color:
+ 
+
+
