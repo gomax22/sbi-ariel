@@ -99,6 +99,7 @@ def train_model(train_dir, settings, train_loader, test_loader, use_wandb=False)
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Train a model")
     ap.add_argument("--run_dir", type=str, required=True, help="Path to the settings file")
+    ap.add_argument("--test", action="store_true", help="Compute posterior distribution for test set")
     args = ap.parse_args()
 
 
@@ -106,14 +107,16 @@ if __name__ == "__main__":
     with open(os.path.join(args.run_dir, "settings.yaml"), "r") as f:
         settings = yaml.safe_load(f)  
 
-    settings["evaluation"]["n_repeats"] = 2048
+    # settings["evaluation"]["n_repeats"] = 2048
 
     # load dataset
     try:
-        test_dataset = load_dataset(settings)[1]
+        test_dataset = load_dataset(settings)
     except FileNotFoundError:
         settings["dataset"]["path"] = "data/"
-        test_dataset = load_dataset(settings)[1]
+        test_dataset = load_dataset(settings)
+
+    test_dataset = test_dataset[2] if args.test else test_dataset[1]
     
     # build test loader
     test_loader = torch.utils.data.DataLoader(
@@ -147,8 +150,8 @@ if __name__ == "__main__":
             posterior_distribution.cpu(), label="theta", inverse=True
         )
 
-    np.save(os.path.join(args.run_dir, "posterior_distribution.npy"), posterior_distribution.detach().cpu().numpy()) # n_samples x n_repeats x dim_theta
-    np.save(os.path.join(args.run_dir, "posterior_log_probs.npy"), posterior_log_probs.detach().cpu().numpy())
+    np.save(os.path.join(args.run_dir, "posterior_distribution.npy" if not args.test else "posterior_distribution_test.npy"), posterior_distribution.detach().cpu().numpy()) # n_samples x n_repeats x dim_theta
+    np.save(os.path.join(args.run_dir, "posterior_log_probs.npy" if not args.test else "posterior_log_probs_test.npy"), posterior_log_probs.detach().cpu().numpy())
     # np.save(os.path.join(args.run_dir, "reference_log_probs.npy"), reference_log_probs.detach().cpu().numpy())
 
     # format time in hours, minutes, seconds

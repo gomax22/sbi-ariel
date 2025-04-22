@@ -26,14 +26,15 @@ np.random.seed(SEED)
 random.seed(SEED)
 
 def compute_posterior_distribution(
-        model,
-        run_dir: str, 
-        settings: dict, 
-        dataset: ArielDataset, 
-        test_loader: torch.utils.data.DataLoader,
-        rank: int,
-        world_size: int
-    ):
+    model,
+    run_dir: str, 
+    test: bool,
+    settings: dict, 
+    dataset: ArielDataset, 
+    test_loader: torch.utils.data.DataLoader,
+    rank: int,
+    world_size: int
+):
     
     n_repeats = settings["evaluation"].get("n_repeats", 2048) 
     dim_theta = settings["task"].get("dim_theta", 7)
@@ -51,8 +52,7 @@ def compute_posterior_distribution(
     posterior_log_probs = torch.zeros((len(test_loader.dataset), repeat_step), device=device) 
     # reference_log_probs = torch.zeros((repeat_step, len(test_loader.dataset)), device=device)
     
-    if rank == 0: pbar = tqdm(total=repeat_step * len(test_loader.dataset), desc="Computing posterior samples...")
-    # with tqdm(total=math.ceil(n_repeats) * len(dataset), desc="Computing posteriors...") as pbar:
+    pbar = tqdm(total=repeat_step * len(test_loader.dataset), desc="Computing posterior samples...", position=rank, leave=True)
 
     for idx, (_, obs) in enumerate(test_loader):
         batch_size = repeat_step // 8  # 512 / 8 = 64
@@ -71,7 +71,7 @@ def compute_posterior_distribution(
             print(f"Time taken for batch {idx} repeat {repeat_idx} /{repeat_step // batch_size}: {time_end - time_start:.2f} s")
             posterior_distribution[idx, (repeat_idx*batch_size):((repeat_idx+1)*batch_size)] = posterior_samples_batch.detach()
             posterior_log_probs[idx, (repeat_idx*batch_size):((repeat_idx+1)*batch_size)] = posterior_log_probs_batch.detach()
-            if rank == 0: pbar.update(batch_size)
+            pbar.update(batch_size)
 
             gc.collect()
             torch.cuda.empty_cache()
@@ -106,7 +106,7 @@ def compute_posterior_distribution(
                 posterior_distribution.cpu(), "theta", inverse=True
             )
 
-        np.save(os.path.join(run_dir, 'posterior_distribution.npy'), posterior_distribution.detach().cpu().numpy()) # n_samples, n_repeats, dim_theta
+        np.save(os.path.join(run_dir, 'posterior_distribution.npy' if not test else 'posterior_distribution_test.npy'), posterior_distribution.detach().cpu().numpy()) # n_samples, n_repeats, dim_theta
         print(f"Rank {rank} - posterior_distribution shape: {posterior_distribution.shape}")
 
     # gather and save posterior log probs
@@ -114,7 +114,7 @@ def compute_posterior_distribution(
     dist.gather(posterior_log_probs, gathered_posterior_log_probs, dst=0)
     if rank == 0:
         posterior_log_probs = torch.cat(gathered_posterior_log_probs, dim=0)
-        np.save(os.path.join(run_dir, 'posterior_log_probs.npy'), posterior_log_probs.detach().cpu().numpy())
+        np.save(os.path.join(run_dir, 'posterior_log_probs.npy' if not test else 'posterior_log_probs_test.npy'), posterior_log_probs.detach().cpu().numpy())
         print(f"Rank {rank} - posterior_log_probs shape: {posterior_log_probs.shape}")
 
 
@@ -132,11 +132,12 @@ def cleanup():
 
 
 
-def distributed_compute_posterior_distribution(rank, world_size, settings, run_dir, latest, port):
+def distributed_compute_posterior_distribution(rank, world_size, settings, run_dir, test, latest, port):
     print(f"Running basic DDP example on rank {rank}.")
     setup(rank, world_size, port)
     
-    test_dataset = load_dataset(settings)[1]
+    test_dataset = load_dataset(settings)
+    test_dataset = test_dataset[2] if test else test_dataset[1]
 
     print(f"Rank {rank} - dataset length: {len(test_dataset)}")
     test_loader = torch.utils.data.DataLoader(
@@ -162,7 +163,7 @@ def distributed_compute_posterior_distribution(rank, world_size, settings, run_d
     gc.collect()
     torch.cuda.empty_cache()
 
-    compute_posterior_distribution(model, run_dir, settings, test_dataset, test_loader, rank, world_size)
+    compute_posterior_distribution(model, run_dir, test, settings, test_dataset, test_loader, rank, world_size)
     
     cleanup()
     print(f"Finished running basic DDP example on rank {rank}.")
@@ -177,6 +178,7 @@ def run_distributed_demo(demo_fn, world_size, settings, run_dir, latest, port):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--run_dir", required=True, help="Base save directory for the evaluation")
+    parser.add_argument("--test", action="store_true", help="Compute posterior distribution for ADC test set")
     parser.add_argument("--latest", action="store_true", default=False, help="Use the latest model in the directory")
     parser.add_argument("--port", type=str, default="12355", help="Port for DDP")
     args = parser.parse_args()
