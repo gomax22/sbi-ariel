@@ -24,10 +24,10 @@ predictors:
   FMPE (IUAN-P):
     eval_dir: batch_runs/dt_FullNormalizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_111529
     color: '#470141'
-  FMPE (IUAS-P):
+  FMPE (IUAZ-P):
     eval_dir: batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_plain/theta_emb_0/layers_14/mfl_2/dropout_0.1/a_-0.75/lr_0.0001/20250220_114102
     color: '#243566'
-  FMPE (IUAS-A):
+  FMPE (IUAZ-A):
     eval_dir: batch_runs/dt_FullStandardizedArielDataset/p_StandardNormal/m_autoencoder/theta_emb_0/layers_7/mfl_1/dropout_0.1/a_-0.75/lr_0.0001/20250220_113323
     color: '#207791'
   FMPE (RUAN-A):

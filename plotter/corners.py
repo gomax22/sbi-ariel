@@ -2,7 +2,6 @@ import numpy as np
 import corner
 import matplotlib.pyplot as plt
 from typing import List
-from sympy import plot
 from tqdm import tqdm
 from pathlib import Path
 import os

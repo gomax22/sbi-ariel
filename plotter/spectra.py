@@ -145,7 +145,7 @@ def plot_median_spectra_with_confidence_intervals(
         fig.savefig(f"{output_fname}.png", dpi=400)
         fig.savefig(f"{output_fname}.pdf", format='pdf', bbox_inches='tight', dpi=400)
         plt.close(fig)
-
+    
 
 def visualise_spectrum(spectrum):
     import matplotlib.pyplot as plt

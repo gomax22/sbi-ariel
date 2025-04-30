@@ -87,22 +87,22 @@ def to_matrix(data_file_gt, predicted_file, aux_df):
     return list_trace_gt, list_weight_gt, list_trace_predicted,list_weight_predicted
 
 
-def load_np(fpath: str):
-    return np.load(fpath)
+def load_np(fpath: str, **kwargs):
+    return np.load(fpath, **kwargs)
 
-def load_json(fpath: str):
+def load_json(fpath: str, **kwargs):
     with open(fpath, 'r') as f:
-        return json.load(f)
+        return json.load(f, **kwargs)
     
-def load_csv(fpath: str):
-    return pd.read_csv(fpath)
+def load_csv(fpath: str, **kwargs):
+    return pd.read_csv(fpath, **kwargs)
 
-def load_pkl(fpath: str):
+def load_pkl(fpath: str, **kwargs):
     with open(fpath, 'rb') as f:
-        return pickle.load(f)
+        return pickle.load(f, **kwargs)
 
 def load_fn(
-    ext: str
+    ext: str,
 ):
     if ext == 'npy':
         return load_np

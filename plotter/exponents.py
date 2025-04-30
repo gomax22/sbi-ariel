@@ -1,4 +1,3 @@
-import torch
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.lines import Line2D
