@@ -1,4 +1,3 @@
-from bdb import effective
 import numpy as np
 import torch
 from os.path import join
@@ -43,7 +42,7 @@ class ArielDataset(Dataset):
             return (sample - min_) / (max_ - min_)
         else:
             return sample * (max_ - min_) + min_
-    
+
 class StandardizedArielDataset(ArielDataset):
     def __init__(self, theta, spectra, preprocessing=None):
         super(StandardizedArielDataset, self).__init__()
@@ -61,7 +60,7 @@ class StandardizedArielDataset(ArielDataset):
     
     def __getitem__(self, idx):
         return self.theta[idx], self.x[idx]
-    
+
 class FullStandardizedArielDataset(ArielDataset):
     def __init__(self, theta, spectra, noises, aux_data, preprocessing=None):
         super(FullStandardizedArielDataset, self).__init__()
@@ -643,47 +642,47 @@ def load_real_full_standardized_ariel_dataset(settings):
 
 def load_dataset(settings):
     # working on real data without noise and aux data
-    if settings["dataset"]["type"] == "NormalizedArielDataset":
+    if settings["dataset"]["type"] == "NormalizedArielDataset":                 # IN
         return load_normalized_ariel_dataset(settings)
     
     # working on ideal data with noise and aux data
-    elif settings["dataset"]["type"] == "FullNormalizedArielDataset":
+    elif settings["dataset"]["type"] == "FullNormalizedArielDataset":           # IUAN
         return load_full_normalized_ariel_dataset(settings)
     
     # working on real data without noise and aux data
-    elif settings["dataset"]["type"] == "StandardizedArielDataset":
+    elif settings["dataset"]["type"] == "StandardizedArielDataset":             # IZ
         return load_standardized_ariel_dataset(settings)
     
     # working on ideal data with noise and aux data
-    elif settings["dataset"]["type"] == "FullStandardizedArielDataset":
+    elif settings["dataset"]["type"] == "FullStandardizedArielDataset":         # IUAZ
         return load_full_standardized_ariel_dataset(settings)
     
-    elif settings["dataset"]["type"] == "NoisyNormalizedArielDataset":
+    elif settings["dataset"]["type"] == "NoisyNormalizedArielDataset":          # IUN
         return load_noisy_normalized_ariel_dataset(settings)
     
-    elif settings["dataset"]["type"] == "NoisyStandardizedArielDataset":
+    elif settings["dataset"]["type"] == "NoisyStandardizedArielDataset":        # IUZ
         return load_noisy_standardized_ariel_dataset(settings)
     
-    elif settings["dataset"]["type"] == "RealNoisyNormalizedArielDataset":
+    elif settings["dataset"]["type"] == "RealNoisyNormalizedArielDataset":      # RUN
         return load_real_noisy_normalized_ariel_dataset(settings)
     
-    elif settings["dataset"]["type"] == "RealNoisyStandardizedArielDataset":
+    elif settings["dataset"]["type"] == "RealNoisyStandardizedArielDataset":    # RUZ
         return load_real_noisy_standardized_ariel_dataset(settings)
     
     # working on real data without noise and with aux data
-    elif settings["dataset"]["type"] == "RealNormalizedArielDataset":
+    elif settings["dataset"]["type"] == "RealNormalizedArielDataset":           # RAN
         return load_real_normalized_ariel_dataset(settings)
     
     # working on real data without noise and with aux data
-    elif settings["dataset"]["type"] == "RealStandardizedArielDataset":
+    elif settings["dataset"]["type"] == "RealStandardizedArielDataset":         # RAZ
         return load_real_standardized_ariel_dataset(settings)
     
     # working on real data with noise and aux data
-    elif settings["dataset"]["type"] == "RealFullNormalizedArielDataset":
+    elif settings["dataset"]["type"] == "RealFullNormalizedArielDataset":       # RUAN
         return load_real_full_normalized_ariel_dataset(settings)
     
     # working on real data with noise and aux data
-    elif settings["dataset"]["type"] == "RealFullStandardizedArielDataset":
+    elif settings["dataset"]["type"] == "RealFullStandardizedArielDataset":     # RUAZ
         return load_real_full_standardized_ariel_dataset(settings)
     else:
         raise ValueError("Dataset not found")
