@@ -44,18 +44,9 @@ To preprocess the downloaded dataset, run the script ``make_dataset.py`` (see ``
 
 If needed, original and/or preprocessed datasets are available on request.
 
-### Settings file
-Several stages of the proposed retrieval framework are guided by specifying an initial settings file, organized as follows:
-- dataset
-- evaluation
-- model
-- task
-- training
-
-
-Please, see the file ``settings/training/custom.yaml`` for additional information.
-
 ### Training
+Several stages of the proposed retrieval framework are guided by specifying an initial settings file, with dataset, evaluation, model, and training specifications. Before training, please see the file ``settings/training/custom.yaml`` for additional information.
+
 To train the CNFs with FMPE, we offer two options:
 - **Single-configuration training:** the script ``run_sbi_ariel.py`` performs the training of a single model configuration by specifying
     *  a settings file with the option ``--settings_file``(typically placed in ``settings/training/base_settings.yaml``)
