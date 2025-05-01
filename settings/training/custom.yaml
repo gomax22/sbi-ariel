@@ -1,0 +1,59 @@
+dataset:
+  path: path/to/your/dataset
+  type: choose one of the following
+    - NormalizedArielDataset
+    - StandardizedArielDataset
+    - FullNormalizedArielDataset
+    - FullStandardizedArielDataset
+    - NoisyNormalizedArielDataset
+    - NoisyStandardizedArielDataset
+    - RealNormalizedArielDataset
+    - RealStandardizedArielDataset
+    - RealNoisyNormalizedArielDataset
+    - RealNoisyStandardizedArielDataset
+    - RealFullNormalizedArielDataset
+    - RealFullStandardizedArielDataset
+evaluation:
+  aux_data: path/to/adc/auxiliary/data
+  beta: 0.8                             # Beta parameter for the ADC2023 scoring system
+  cia_path: path/to/adc/cia/data
+  n_quantiles: 10                       # Number of quantiles to compute the spectral loss for the ADC2023 scoring system
+  n_repeats: 2048                       # Number of realizations for computing the posterior distribution
+  opacity_path: path/to/adc/opacity/data
+  tracedata: path/to/adc/tracedata
+model:
+  posterior_kwargs:
+    activation: gelu
+    batch_norm: true
+    context_with_glu: false
+    dropout: 0.0
+    hidden_dims_layers:
+    - 128
+    - 256
+    - 512
+    - 1024
+    - 512
+    - 256
+    - 128
+    multiplicative_factor_layers: 2
+    sigma_min: 0.001
+    theta_with_glu: true
+    time_prior_exponent: -0.5
+    type: DenseResidualNet
+  prior:
+    type: StandardNormal
+  type: flow_matching
+task:
+  name: adc
+training:
+  batch_size: 64
+  device: cuda
+  epochs: 450
+  num_workers: 0
+  optimizer:
+    lr: 0.0005
+    type: adam
+  scheduler:
+    T_max: 150
+    type: cosine
+  train_fraction: 0.95

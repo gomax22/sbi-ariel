@@ -77,7 +77,7 @@ def train_model(train_dir, settings, train_loader, test_loader, use_wandb=False)
     return best_model
 
 
-def run_sbi_ariel(settings_file, source_dir):
+def run_sbi_ariel(settings_file, experiments_dir):
     
     current_time = datetime.now()
     working_dir, fname = os.path.split(os.path.abspath(__file__))
@@ -129,7 +129,7 @@ def run_sbi_ariel(settings_file, source_dir):
 
     model_architecture = "plain" if len(set(settings["model"]["posterior_kwargs"]["hidden_dims_layers"])) == 1 else "autoencoder"
 
-    rundir_name = os.path.join(f"{source_dir}",
+    rundir_name = os.path.join(f"{experiments_dir}",
                                 f"dt_{dataset_type}",
                                 f"p_{prior}",
                                 # f"ctxt_{context}", 
@@ -187,6 +187,6 @@ def run_sbi_ariel(settings_file, source_dir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Train a model")
     ap.add_argument("--settings_file", type=str, required=True, help="Path to the settings file")
-    ap.add_argument("--source_dir", type=str, required=False, default='runs', help="Path to the source directory")
+    ap.add_argument("--experiments_dir", type=str, required=False, default='runs', help="Path to the directory where experiments will be stored")
     args = vars(ap.parse_args())
     run_sbi_ariel(**args)

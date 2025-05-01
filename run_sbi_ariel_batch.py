@@ -115,7 +115,7 @@ def create_settings(basic_settings, settings_dir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Train a model")
     ap.add_argument("--settings_dir", type=str, required=True, help="Path to the settings directory")
-    ap.add_argument("--source_dir", type=str, required=False, default='batch_runs', help="Path to the source directory")
+    ap.add_argument("--experiments_dir", type=str, required=False, default='batch_runs', help="Path to the directory where the experiments will be stored")
     args = ap.parse_args()
 
     current_time = datetime.now()
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     
     pbar = tqdm(total=len(settings_files), desc="Running sbi-ariel...")
     with concurrent.futures.ProcessPoolExecutor(max_workers=12) as executor:
-        future_to_settings = {executor.submit(run_sbi_ariel, settings_file, args.source_dir): settings_file for settings_file in settings_files}
+        future_to_settings = {executor.submit(run_sbi_ariel, settings_file, args.experiments_dir): settings_file for settings_file in settings_files}
         for future in concurrent.futures.as_completed(future_to_settings):
 
             # flush cpu and gpu ram

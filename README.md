@@ -1,18 +1,33 @@
 # Flow Matching Posterior Estimation for Simulation-based Atmospheric Retrieval of Exoplanets
-Official code repository of the paper "Flow Matching Posterior Estimation for Simulation-based Atmospheric Retrieval of Exoplanets", submitted to IEEE Access (Applied Research)
+
+![Python 3.10](https://img.shields.io/badge/python-3.10+-blue)
+
+This repository contains the code for the research paper:
+
+> M. Giordano Orsini, A. Ferone, L. Inno, A. Casolaro, A. Maratea (2025).
+> "Flow Matching Posterior Estimation for Simulation-based Atmospheric Retrieval of Exoplanets".
+> Submitted to IEEE Access (Applied Research)
 
 
-## Abstract
-The characterization of exoplanetary atmospheres allows a deeper understanding of planetary formation, evolution, and habitability through _atmospheric retrieval_, which consists in inferring various properties of exoplanetary atmospheres given their spectroscopic observations.
-Traditional atmospheric retrieval methods based on Bayesian inference, such as Nested Sampling, require significant computational resources to compute the full posterior distribution of atmospheric parameters, limiting their scalability for future large-scale surveys and high-resolution characterizations. 
-Additionally, the rise of modern density estimation techniques poses a fundamental need for comprehensive evaluation frameworks to objectively compare the posterior distributions of heterogeneous probabilistic estimators.
-Within the scope of the 2023 edition of the Ariel Data Challenge, this work proposes a novel, scalable atmospheric retrieval framework based on Flow Matching Posterior Estimation (FMPE) and Continuous Normalizing Flows (CNFs), leveraging transmission spectra, instrumental uncertainties across wavelength channels, and auxiliary information about planetary systems, to retrieve the posterior distribution of atmospheric parameters in a significantly reduced computational time compared to conventional techniques.
-Through the fair definition of an extensive posterior evaluation framework, our approach demonstrates superior performance in terms of target prediction error, uncertainty quantification, calibration, and posterior coverage, outperforming existing neural-based and sampling-based retrieval methods. 
-In addition, the integration of auxiliary planetary system information into the proposed retrieval framework enhances predictive accuracy, reduces uncertainty, and improves interpretability, bridging data-driven models with physical mechanisms.
+---
 
 ## Installation
+Our code was developed on a machine with the following hardware specifications:
+- **CPU**: 13th Gen Intel Core i9-13900KF (24 cores @ 5.8 GHz)
+- **GPU**: NVIDIA GeForce RTX 4090 (24GB VRAM)
+- **OS**: Ubuntu 22.04 LTS
 
-```
+and makes use of the following software libraries among the others:
+  - `dingo` ([Dax et al. 2021](https://arxiv.org/abs/2106.12594))
+  - `PyTorch` (v2.0+ with CUDA 12.4)
+  - `netcal` ([Küppers et al. 2022](http://arxiv.org/abs/2207.01242)) for calibration metrics
+  - `sbi` ([Tejero-Cantero et al. 2020](https://joss.theoj.org/papers/10.21105/joss.02505)) for statistical inference
+
+To create a virtual environment for running the code, please execute the following commands:
+
+```bash
+git clone https://github.com/gomax22/sbi-ariel
+cd sbi-ariel
 conda env create -f environment.yml
 conda activate fmpe-ariel
 ```
@@ -23,21 +38,44 @@ This section aims to provide guidelines for training, testing, and evaluating mo
 
 ### Data
 
-The ADC2023 dataset is publicly available at this link.
+The ADC2023 dataset is publicly available at this [link](https://www.ariel-datachallenge.space/ML/download/).
 
-To preprocess the downloaded dataset, run the script ``make_dataset.py`` (see ``--help`` for additional information)-
+To preprocess the downloaded dataset, run the script ``make_dataset.py`` (see ``--help`` for additional information).
 
-Datasets are available on request (both in the original version and/or the preprocessed one.)
+If needed, original and/or preprocessed datasets are available on request.
+
+### Settings file
+Several stages of the proposed retrieval framework are guided by specifying an initial settings file, organized as follows:
+- dataset
+- evaluation
+- model
+- task
+- training
+
+
+Please, see the file ``settings/training/custom.yaml`` for additional information.
 
 ### Training
 To train the CNFs with FMPE, we offer two options:
 - **Single-configuration training:** the script ``run_sbi_ariel.py`` performs the training of a single model configuration by specifying
-    *  a settings file with the option ``--settings_file``(typically placed in ``settings/training/config.yaml``)
-    * an output directory for storing the model checkpoints and related information.
+    *  a settings file with the option ``--settings_file``(typically placed in ``settings/training/base_settings.yaml``)
+    * an output directory for storing the experimental outcomes (e..g, model checkpoints, etc.) with the option ``--experiments_dir``.
+
+    For example,
+    ```bash
+    python run_sbi_ariel.py --settings_file settings/training/base_settings.yaml --experiments_dir runs
+    ```    
+
 - **Multiple-configuration training:** the script ``run_sbi_ariel_batch.py`` performs the traning of multiple model configurations by specifying 
     * the sweep values for the hyperparameters in the script file
     * a settings dir with the option ``--settings_dir`` (default: ``settings/training/base_settings.yaml``), where temporary settings files will be stored.
-    * the root directory (with the option ``--source_dir``) where experiments will be stored.
+    * the root directory (with the option ``--experiments_dir``) where experiments will be stored.
+
+    For example,
+    ```bash
+    python run_sbi_ariel_batch.py --settings_dir settings/training --experiments_dir batch_runs
+    ```    
+    **N.B.:** Be careful as this could be decidedly time-intensive.
 
 ### Filtering the runs in terms of validation loss (optional)
 
@@ -48,7 +86,7 @@ To find the best runs in terms of validation loss, run the script ``find_best_ru
 For example, the command:
 
 ```bash
-python find_best_runs --runs_dir <your_source_dir> --top-k 1
+python find_best_runs --runs_dir batch_runs --top-k 1
 ```
 
 provides the best runs in terms of validation loss within the given directory.
@@ -64,8 +102,16 @@ Both scripts can be executed by specifying:
 * the directory where a given model (typically saved with the filename ``best_model.pt``) is stored with the option ``--run_dir``.
 * (optional) the option ``--test`` performs the posterior computation on the samples of the effective test set of the ADC2023 (even though, we lack of the Nested Sampling-based posterior.)
 
-N.B.: it is crucial that the posterior samples are saved as ``posterior_distribution.npy`` (of shape $N_{test}$, R, d$) where $N_{test} is the number of test samples, $R$ is the number of realizations (fixed to 2048 in our case), and $d$ is the number of target atmospheric parameters (i.e., 7 in our case).
+For example, the command:
+ ```bash
+python compute_posterior_distribution_single_gpu.py --run_dir path/to/training/run 
+```
+produces the posterior distribution (saved as ``posterior_distribution.npy`` within the corresponding directory) of shape $N_{test}$, R, d$ where:
+* $N_{test}$ is the number of test samples,
+* $R$ is the number of realizations (fixed to 2048 in the original settings file), and
+* $d$ is the number of target atmospheric parameters (i.e., 7 in the ADC2023 case).
 
+**WARNING:** be careful as this could take several hours.
 ### Evaluation
 
 To evaluate the predicted posterior distribution, we offer several options:
@@ -87,6 +133,11 @@ Once the predicted posterior distribution
 To perform a comparison between multiple trained models and other estimators according to the extended posterior evaluation framework, run the script ``comparison.py`` by specifying:
 * a settings file for aggregating information about the competing methods (e.g., see ``settings/comparison/final_comparison_settings.yaml``).
 * the directory where results are stored with the option ``--output_dir``.
+
+For example,
+```bash
+python comparison.py --settings_file settings/comparison/final_comparison_settings.yaml --output_dir comparisons/final
+```
 
 ## Citation
 
