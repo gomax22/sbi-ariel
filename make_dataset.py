@@ -59,6 +59,7 @@ def make_dataset(training_path: str, training_gt_path: str, test_path: str | Non
 
     if not Path(output_path).exists():
         Path(output_path).mkdir(parents=True, exist_ok=True)
+    np.save(os.path.join(output_path, "train_mapping.npy"), train_indices)
     np.save(os.path.join(output_path, "valid_mapping.npy"), valid_indices) 
     np.save(os.path.join(output_path, "test_mapping.npy"), test_indices)
 
@@ -98,9 +99,7 @@ def make_dataset(training_path: str, training_gt_path: str, test_path: str | Non
     np.save(os.path.join(output_path, 'valid_aux_data.npy'), valid_aux_training_data)
     np.save(os.path.join(output_path, 'valid_targets.npy'), valid_targets)
     np.save(os.path.join(output_path, 'valid_real_spectra.npy'), valid_real_spectra)
-    np.save(os.path.join(output_path, 'valid_mapping.npy'), valid_indices)
 
-    np.save(os.path.join(output_path, 'test_mapping.npy'), test_indices)
     np.save(os.path.join(output_path, 'test_ideal_spectra.npy'), test_spectra)
     np.save(os.path.join(output_path, 'test_noises.npy'), test_noises)
     np.save(os.path.join(output_path, 'test_aux_data.npy'), test_aux_training_data)
