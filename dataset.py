@@ -598,7 +598,7 @@ def load_real_full_normalized_ariel_dataset(settings):
     effective_test_aux_data = torch.tensor(np.load(join(directory_save, 'effective_test_aux_data.npy')), dtype=torch.float)
     effective_test_noises = torch.tensor(np.load(join(directory_save, 'effective_test_noises.npy')), dtype=torch.float)
     fake_targets = torch.ones((len(effective_test_spectra), train_targets.shape[1]), dtype=torch.float)
-    test_dataset = FullNormalizedArielDataset(fake_targets, effective_test_spectra, effective_test_aux_data, preprocessing=train_dataset.preprocessing)
+    test_dataset = FullNormalizedArielDataset(fake_targets, effective_test_spectra, effective_test_noises, effective_test_aux_data, preprocessing=train_dataset.preprocessing)
 
     return train_dataset, valid_dataset, test_dataset
     
