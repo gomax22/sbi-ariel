@@ -60,7 +60,7 @@ def plot_median_spectrum_with_confidence_intervals(
     # spectrum[idx, 2, :] => noise
     # plt.errorbar(x=spectrum[:,0], y= spectrum[:,1]*100, yerr=spectrum[:,2]*100 )
     # fig.savefig(output_fname, dpi=400)
-    fig.savefig(output_fname, format='pdf', bbox_inches='tight', dpi=400)
+    fig.savefig(output_fname, dpi=400)
     plt.close(fig)
 
 
