@@ -183,7 +183,6 @@ def run_sbi_ariel(settings_file, experiments_dir):
 
 
 
-# 480 configurations to explore... we need organization.
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Train a model")
     ap.add_argument("--settings_file", type=str, required=True, help="Path to the settings file")
