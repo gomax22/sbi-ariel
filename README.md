@@ -6,7 +6,7 @@ This repository contains the code for the research paper:
 
 > M. Giordano Orsini, A. Ferone, L. Inno, A. Casolaro, A. Maratea (2025).
 > "Flow Matching Posterior Estimation for Simulation-based Atmospheric Retrieval of Exoplanets".
-> Submitted to IEEE Access (Applied Research)
+> Accepted for publication on IEEE Access (Applied Research)
 
 
 ---
@@ -133,5 +133,15 @@ python comparison.py --settings_file settings/comparison/final_comparison_settin
 ## Citation
 
 ```bibtex
-T.B.D
+@ARTICLE{giordanoorsini_flow_2025,
+  author={Giordano Orsini, Massimiliano and Ferone, Alessio and Inno, Laura and Casolaro, Angelo and Maratea, Antonio},
+  journal={IEEE Access}, 
+  title={Flow Matching Posterior Estimation for Simulation-based Atmospheric Retrieval of Exoplanets}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1-1},
+  keywords={Atmospheric modeling;Extrasolar planets;Estimation;Bayes methods;Atmospheric waves;Uncertainty;Surveys;Training;Space missions;Scalability;atmospheric retrieval;deep learning;exoplanets;flow matching;generative modeling;simulation-based inference},
+  doi={10.1109/ACCESS.2025.3594751}}
+
 ```
