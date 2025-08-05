@@ -8,6 +8,8 @@ This repository contains the code for the research paper:
 > "Flow Matching Posterior Estimation for Simulation-based Atmospheric Retrieval of Exoplanets".
 > Accepted for publication on IEEE Access (Applied Research)
 
+![Overview of the proposed framework](./paper/images/flowchart.png)
+
 
 ---
 
